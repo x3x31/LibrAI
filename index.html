@@ -1,329 +1,323 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VLibras App</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VLibras App</title>
 
-<link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
 
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
-<style>
-body {
-  margin:0;
-  font-family: 'Segoe UI', sans-serif;
-  background:#f5f7fb;
-}
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #f5f7fb;
+      }
 
-header {
-  background:white;
-  padding:15px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.05);
-}
+      header {
+        background: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
 
-header img {
-  width:45px;
-  border-radius:50%;
-}
+      header img {
+        width: 45px;
+        border-radius: 50%;
+      }
 
-.container {
-  padding:15px;
-}
+      .container {
+        padding: 15px;
+      }
 
-.banner {
-  background: linear-gradient(90deg,#4f8cff,#2563eb);
-  color:white;
-  border-radius:15px;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+      .banner {
+        background: linear-gradient(90deg, #4f8cff, #2563eb);
+        color: white;
+        border-radius: 15px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-.banner img {
-  width:90px;
-}
+      .banner img {
+        width: 90px;
+      }
 
-.card {
-  background:white;
-  border-radius:15px;
-  padding:15px;
-  margin-top:15px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.05);
-}
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
 
-textarea {
-  width: -webkit-fill-available;
-  height:90px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  padding:10px;
-}
+      textarea {
+        width: -webkit-fill-available;
+        height: 90px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
 
-button {
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  margin-top:10px;
-  background: linear-gradient(90deg,#4f8cff,#2563eb);
-  color:white;
-}
+      button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        margin-top: 10px;
+        background: linear-gradient(90deg, #4f8cff, #2563eb);
+        color: white;
+      }
 
-.categories .category {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  background:white;
-  padding:12px;
-  border-radius:12px;
-  margin-top:10px;
-  cursor:pointer;
-}
+      .categories .category {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
 
-.categories img {
-  width:50px;
-}
+      .categories img {
+        width: 50px;
+      }
 
-.grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:15px;
-}
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+      }
 
-.item {
-  background:white;
-  border-radius:12px;
-  padding:10px;
-  text-align:center;
-}
+      .item {
+        background: white;
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+      }
 
-.item img {
-  width:80px;
-  height:80px;
-  object-fit:contain;
-}
+      .item img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+      }
 
-.hidden { display:none; }
+      .hidden {
+        display: none;
+      }
 
-.back {
-  cursor:pointer;
-  color:#2563eb;
-  margin-bottom:10px;
-}
+      .back {
+        cursor: pointer;
+        color: #2563eb;
+        margin-bottom: 10px;
+      }
 
-p {
-    margin-block-start: 0em;
-    margin-block-end: 0em;
-}
-</style>
-</head>
+      p {
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <header>
+      <img src="https://i.pravatar.cc/100" />
+      <div>
+        <strong>Olá, Usuário 👋</strong><br />
+        <small>usuario@email.com</small>
+      </div>
+    </header>
 
-<header>
-  <img src="https://i.pravatar.cc/100">
-  <div>
-    <strong>Olá, Usuário 👋</strong><br>
-    <small>usuario@email.com</small>
-  </div>
-</header>
+    <div class="container">
+      <!-- HOME -->
+      <div id="home">
+        <div class="banner">
+          <div>
+            <h2>VLibras</h2>
+            <p>Traduza com inclusão</p>
+          </div>
+          <img src="img/banners/sentimentos.png" />
+        </div>
 
-<div class="container">
+        <div class="card">
+          <textarea id="texto"></textarea>
 
-<!-- HOME -->
-<div id="home">
+          <button onclick="traduzir()">Traduzir</button>
+        </div>
 
-  <div class="banner">
-    <div>
-      <h2>VLibras</h2>
-      <p>Traduza com inclusão</p>
+        <h3>Categorias</h3>
+
+        <div class="categories">
+          <div class="category" onclick="abrirCategoria('cumprimentos')">
+            <img src="img/banners/cumprimentos.png" />
+            Cumprimentos
+          </div>
+
+          <div class="category" onclick="abrirCategoria('objetos')">
+            <img src="img/banners/objetos.png" />
+            Objetos de sala
+          </div>
+
+          <div class="category" onclick="abrirCategoria('sentimentos')">
+            <img src="img/banners/sentimentos.png" />
+            Sentimentos
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIA -->
+      <div id="categoria" class="hidden">
+        <div class="back" onclick="voltar()">← Voltar</div>
+
+        <h2 id="tituloCategoria"></h2>
+
+        <div class="card">
+          <textarea id="textoCategoria"></textarea>
+
+          <button onclick="traduzir()">Traduzir</button>
+
+          <button onclick="sugerirFraseCategoria()">✨ IA sugerir frase</button>
+        </div>
+
+        <div class="grid" id="listaItens"></div>
+      </div>
     </div>
-    <img src="img/banners/sentimentos.png">
-  </div>
 
-  <div class="card">
-    <textarea id="texto"></textarea>
-
-    <button onclick="traduzir()">Traduzir</button>
-  </div>
-
-  <h3>Categorias</h3>
-
-  <div class="categories">
-
-    <div class="category" onclick="abrirCategoria('cumprimentos')">
-      <img src="img/banners/cumprimentos.png">
-      Cumprimentos
+    <!-- VLibras -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
     </div>
 
-    <div class="category" onclick="abrirCategoria('objetos')">
-      <img src="img/banners/objetos.png">
-      Objetos de sala
-    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
-    <div class="category" onclick="abrirCategoria('sentimentos')">
-      <img src="img/banners/sentimentos.png">
-      Sentimentos
-    </div>
+    <script>
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
 
-  </div>
+      // 📚 Dados com imagens
+      const dados = {
+        cumprimentos: [
+          { nome: "Olá", img: "img/cumprimentos/ola.png" },
+          { nome: "Oi", img: "img/cumprimentos/oi.png" },
+          { nome: "Bom dia", img: "img/cumprimentos/bom_dia.png" },
+          { nome: "Boa tarde", img: "img/cumprimentos/boa_tarde.png" },
+          { nome: "Boa noite", img: "img/cumprimentos/boa_noite.png" },
+        ],
 
-</div>
+        objetos: [
+          { nome: "Cadeira", img: "img/objetos/cadeira.png" },
+          { nome: "Mesa", img: "img/objetos/mesa.png" },
+          { nome: "Quadro", img: "img/objetos/quadro.png" },
+          { nome: "Lápis", img: "img/objetos/lapis.png" },
+          { nome: "Mochila", img: "img/objetos/mochila.png" },
+        ],
 
-<!-- CATEGORIA -->
-<div id="categoria" class="hidden">
+        sentimentos: [
+          { nome: "Feliz", img: "img/sentimentos/feliz.png" },
+          { nome: "Triste", img: "img/sentimentos/triste.png" },
+          { nome: "Surpreso", img: "img/sentimentos/surpreso.png" },
+          { nome: "Bravo", img: "img/sentimentos/bravo.png" },
+          { nome: "Pensativo", img: "img/sentimentos/pensativo.png" },
+        ],
+      };
 
-  <div class="back" onclick="voltar()">← Voltar</div>
+      let categoriaAtual = "";
 
-  <h2 id="tituloCategoria"></h2>
+      // 🔄 Navegação
+      function abrirCategoria(cat) {
+        categoriaAtual = cat;
 
-  <div class="card">
-    <textarea id="textoCategoria"></textarea>
+        document.getElementById("home").classList.add("hidden");
+        document.getElementById("categoria").classList.remove("hidden");
 
-    <button onclick="traduzir()">Traduzir</button>
+        document.getElementById("tituloCategoria").innerText =
+          cat.toUpperCase();
 
-    <button onclick="sugerirFraseCategoria()">✨ IA sugerir frase</button>
-  </div>
+        const lista = document.getElementById("listaItens");
+        lista.innerHTML = "";
 
-  <div class="grid" id="listaItens"></div>
-
-</div>
-
-</div>
-
-<!-- VLibras -->
-<div vw class="enabled">
-  <div vw-access-button></div>
-  <div vw-plugin-wrapper>
-    <div class="vw-plugin-top-wrapper"></div>
-  </div>
-</div>
-
-<script>
-new window.VLibras.Widget('https://vlibras.gov.br/app');
-
-// 📚 Dados com imagens
-const dados = {
-  cumprimentos: [
-    {nome:"Olá", img:"img/cumprimentos/ola.png"},
-    {nome:"Oi", img:"img/cumprimentos/oi.png"},
-    {nome:"Bom dia", img:"img/cumprimentos/bom_dia.png"},
-    {nome:"Boa tarde", img:"img/cumprimentos/boa_tarde.png"},
-    {nome:"Boa noite", img:"img/cumprimentos/boa_noite.png"}
-  ],
-
-  objetos: [
-    {nome:"Cadeira", img:"img/objetos/cadeira.png"},
-    {nome:"Mesa", img:"img/objetos/mesa.png"},
-    {nome:"Quadro", img:"img/objetos/quadro.png"},
-    {nome:"Lápis", img:"img/objetos/lapis.png"},
-    {nome:"Mochila", img:"img/objetos/mochila.png"}
-  ],
-
-  sentimentos: [
-    {nome:"Feliz", img:"img/sentimentos/feliz.png"},
-    {nome:"Triste", img:"img/sentimentos/triste.png"},
-    {nome:"Surpreso", img:"img/sentimentos/surpreso.png"},
-    {nome:"Bravo", img:"img/sentimentos/bravo.png"},
-    {nome:"Pensativo", img:"img/sentimentos/pensativo.png"}
-  ]
-};
-
-let categoriaAtual = "";
-
-// 🔄 Navegação
-function abrirCategoria(cat){
-  categoriaAtual = cat;
-
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("categoria").classList.remove("hidden");
-
-  document.getElementById("tituloCategoria").innerText = cat.toUpperCase();
-
-  const lista = document.getElementById("listaItens");
-  lista.innerHTML = "";
-
-  dados[cat].forEach(item=>{
-    lista.innerHTML += `
+        dados[cat].forEach((item) => {
+          lista.innerHTML += `
       <div class="item">
         <img src="${item.img}">
         <p>${item.nome}</p>
         <button onclick="traduzirTexto('${item.nome}')">Ver sinal</button>
       </div>
     `;
-  });
-}
-
-function voltar(){
-  document.getElementById("home").classList.remove("hidden");
-  document.getElementById("categoria").classList.add("hidden");
-}
-
-// ✋ VLibras
-function traduzir(){
-  alert("Clique no botão azul do VLibras na tela 👆");
-}
-
-function traduzirTexto(texto){
-  document.getElementById("textoCategoria").value = texto;
-}
-
-// 🤖 IA por categoria
-async function sugerirFraseCategoria() {
-
-  let contexto = document.getElementById("textoCategoria").value;  
-    
-  document.getElementById("textoCategoria").value = "Carregando...";  
-
-  if (!contexto || contexto.trim() === "") {
-    if(categoriaAtual === "sentimentos")
-      contexto = "sobre sentimentos";
-
-    if(categoriaAtual === "objetos")
-      contexto = "sobre sala de aula";
-
-    if(categoriaAtual === "cumprimentos")
-      contexto = "de cumprimento";
-  }
-   
-  try {
-    const resposta = await fetch(
-      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=AIzaSyBiGr_yucLJ_IDda7-Hk2_LcyqRoxzjf_U",                                                          
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `Gere apenas UMA frase curta utilizando ${contexto}, com no máximo 5 palavras, adequada para Libras. Não explique. Não dê exemplos. Apenas a frase.`
-            }]
-          }]
-        })
+        });
       }
-    );
 
-    const data = await resposta.json();
+      function voltar() {
+        document.getElementById("home").classList.remove("hidden");
+        document.getElementById("categoria").classList.add("hidden");
+      }
 
-    const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text 
-      || "Erro ao gerar resposta";
+      // ✋ VLibras
+      function traduzir() {
+        alert("Clique no botão azul do VLibras na tela 👆");
+      }
 
-    document.getElementById("textoCategoria").value = texto;
+      function traduzirTexto(texto) {
+        document.getElementById("textoCategoria").value = texto;
+      }
 
-  } catch (erro) {
-    document.getElementById("textoCategoria").value = "Erro: " + erro;
-    console.error(erro);
-  }
-      
-}
-</script>
+      // 🤖 IA por categoria
+      async function sugerirFraseCategoria() {
+        let contexto = document.getElementById("textoCategoria").value;
 
-</body>
+        document.getElementById("textoCategoria").value = "Carregando...";
+
+        if (!contexto || contexto.trim() === "") {
+          if (categoriaAtual === "sentimentos") contexto = "sobre sentimentos";
+
+          if (categoriaAtual === "objetos") contexto = "sobre sala de aula";
+
+          if (categoriaAtual === "cumprimentos") contexto = "de cumprimento";
+        }
+
+        try {
+          const resposta = await fetch(
+            "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=AIzaSyBiGr_yucLJ_IDda7-Hk2_LcyqRoxzjf_U",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      {
+                        text: `Gere apenas UMA frase curta utilizando ${contexto}, com no máximo 5 palavras, adequada para Libras. Não explique. Não dê exemplos. Apenas a frase.`,
+                      },
+                    ],
+                  },
+                ],
+              }),
+            },
+          );
+
+          const data = await resposta.json();
+
+          const texto =
+            data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+            "Erro ao gerar resposta";
+
+          document.getElementById("textoCategoria").value = texto;
+        } catch (erro) {
+          document.getElementById("textoCategoria").value = "Erro: " + erro;
+          console.error(erro);
+        }
+      }
+    </script>
+  </body>
 </html>
