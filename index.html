@@ -56,12 +56,16 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       }
 
-      textarea {
+      .input-area {
         width: -webkit-fill-available;
-        height: 90px;
+        min-height: 90px;
         border-radius: 10px;
         border: 1px solid #ddd;
         padding: 10px;
+        background: white;
+        outline: none;
+        white-space: pre-wrap;
+        overflow-y: auto;
       }
 
       button {
@@ -147,7 +151,7 @@
         </div>
 
         <div class="card">
-          <textarea id="texto"></textarea>
+          <div id="texto" class="input-area" contenteditable="true"></div>
 
           <button onclick="traduzir()">Traduzir</button>
         </div>
@@ -179,7 +183,7 @@
         <h2 id="tituloCategoria"></h2>
 
         <div class="card">
-          <textarea id="textoCategoria"></textarea>
+          <div id="textoCategoria" class="input-area" contenteditable="true"></div>
 
           <button onclick="traduzir()">Traduzir</button>
 
@@ -267,14 +271,14 @@
       }
 
       function traduzirTexto(texto) {
-        document.getElementById("textoCategoria").value = texto;
+        document.getElementById("textoCategoria").textContent = texto;
       }
 
       // 🤖 IA por categoria
       async function sugerirFraseCategoria() {
-        let contexto = document.getElementById("textoCategoria").value;
+        let contexto = document.getElementById("textoCategoria").textContent;
 
-        document.getElementById("textoCategoria").value = "Carregando...";
+        document.getElementById("textoCategoria").textContent = "Carregando...";
 
         if (!contexto || contexto.trim() === "") {
           if (categoriaAtual === "sentimentos") contexto = "sobre sentimentos";
@@ -312,9 +316,9 @@
             data?.candidates?.[0]?.content?.parts?.[0]?.text ||
             "Erro ao gerar resposta";
 
-          document.getElementById("textoCategoria").value = texto;
+          document.getElementById("textoCategoria").textContent = texto;
         } catch (erro) {
-          document.getElementById("textoCategoria").value = "Erro: " + erro;
+          document.getElementById("textoCategoria").textContent = "Erro: " + erro;
           console.error(erro);
         }
       }
