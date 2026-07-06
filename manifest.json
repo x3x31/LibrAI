@@ -1,0 +1,10 @@
+{
+  "name": "VLibras App",
+  "short_name": "VLibras",
+  "description": "Aplicativo de tradução para Libras com VLibras",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2563eb",
+  "lang": "pt-BR"
+}
