@@ -56,16 +56,12 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       }
 
-      .input-area {
+      textarea {
         width: -webkit-fill-available;
-        min-height: 90px;
+        height: 90px;
         border-radius: 10px;
         border: 1px solid #ddd;
         padding: 10px;
-        background: white;
-        outline: none;
-        white-space: pre-wrap;
-        overflow-y: auto;
       }
 
       button {
@@ -73,7 +69,7 @@
         padding: 12px;
         border-radius: 10px;
         border: none;
-        margin-top: 10px;
+        margin-top: 0px;
         background: linear-gradient(90deg, #4f8cff, #2563eb);
         color: white;
       }
@@ -108,8 +104,7 @@
       }
 
       .item img {
-        width: 80px;
-        height: 80px;
+        width: 18vw;
         object-fit: contain;
       }
 
@@ -151,7 +146,7 @@
         </div>
 
         <div class="card">
-          <div id="texto" class="input-area" contenteditable="true"></div>
+          <textarea id="texto"></textarea>
 
           <button onclick="traduzir()">Traduzir</button>
         </div>
@@ -183,7 +178,7 @@
         <h2 id="tituloCategoria"></h2>
 
         <div class="card">
-          <div id="textoCategoria" class="input-area" contenteditable="true"></div>
+          <textarea id="textoCategoria"></textarea>
 
           <button onclick="traduzir()">Traduzir</button>
 
@@ -252,9 +247,8 @@
         dados[cat].forEach((item) => {
           lista.innerHTML += `
       <div class="item">
-        <img src="${item.img}">
-        <p>${item.nome}</p>
-        <button onclick="traduzirTexto('${item.nome}')">Ver sinal</button>
+        <img src="${item.img}">        
+        <button onclick="traduzirTexto('${item.nome}')">${item.nome}</button>
       </div>
     `;
         });
@@ -271,14 +265,14 @@
       }
 
       function traduzirTexto(texto) {
-        document.getElementById("textoCategoria").textContent = texto;
+        document.getElementById("textoCategoria").value = texto;
       }
 
       // 🤖 IA por categoria
       async function sugerirFraseCategoria() {
-        let contexto = document.getElementById("textoCategoria").textContent;
+        let contexto = document.getElementById("textoCategoria").value;
 
-        document.getElementById("textoCategoria").textContent = "Carregando...";
+        document.getElementById("textoCategoria").value = "Carregando...";
 
         if (!contexto || contexto.trim() === "") {
           if (categoriaAtual === "sentimentos") contexto = "sobre sentimentos";
@@ -316,9 +310,10 @@
             data?.candidates?.[0]?.content?.parts?.[0]?.text ||
             "Erro ao gerar resposta";
 
-          document.getElementById("textoCategoria").textContent = texto;
+          document.getElementById("textoCategoria").value = texto;
         } catch (erro) {
-          document.getElementById("textoCategoria").textContent = "Erro: " + erro;
+          document.getElementById("textoCategoria").value =
+            "Erro: " + erro;
           console.error(erro);
         }
       }
