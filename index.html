@@ -56,12 +56,14 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       }
 
-      textarea {
+      textarea,
+      .input-area {
         width: -webkit-fill-available;
         height: 90px;
         border-radius: 10px;
         border: 1px solid #ddd;
         padding: 10px;
+        overflow-y: auto;
       }
 
       button {
@@ -178,7 +180,7 @@
         <h2 id="tituloCategoria"></h2>
 
         <div class="card">
-          <textarea id="textoCategoria"></textarea>
+          <div id="textoCategoria" class="input-area" contenteditable="true"></div>
 
           <button onclick="traduzir()">Traduzir</button>
 
@@ -265,14 +267,14 @@
       }
 
       function traduzirTexto(texto) {
-        document.getElementById("textoCategoria").value = texto;
+        document.getElementById("textoCategoria").innerText = texto;
       }
 
       // 🤖 IA por categoria
       async function sugerirFraseCategoria() {
-        let contexto = document.getElementById("textoCategoria").value;
+        let contexto = document.getElementById("textoCategoria").innerText;
 
-        document.getElementById("textoCategoria").value = "Carregando...";
+        document.getElementById("textoCategoria").innerText = "Carregando...";
 
         if (!contexto || contexto.trim() === "") {
           if (categoriaAtual === "sentimentos") contexto = "sobre sentimentos";
@@ -310,9 +312,9 @@
             data?.candidates?.[0]?.content?.parts?.[0]?.text ||
             "Erro ao gerar resposta";
 
-          document.getElementById("textoCategoria").value = texto;
+          document.getElementById("textoCategoria").innerText = texto;
         } catch (erro) {
-          document.getElementById("textoCategoria").value =
+          document.getElementById("textoCategoria").innerText =
             "Erro: " + erro;
           console.error(erro);
         }
