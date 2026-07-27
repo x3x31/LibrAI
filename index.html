@@ -300,7 +300,7 @@
 
         try {
           const resposta = await fetch(
-            "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=AIzaSyBiGr_yucLJ_IDda7-Hk2_LcyqRoxzjf_U",
+            "https://generativelanguage.googleapis.com/v1/models/gemini-flash-latest:generateContent?key=AQ.Ab8RN6JmU1d4_m7ieXv2rO697iflyd0rYOhkKQUCEgMaiBfBw",
             {
               method: "POST",
               headers: {
@@ -311,7 +311,7 @@
                   {
                     parts: [
                       {
-                        text: `Gere apenas UMA frase curta utilizando ${contexto}, com no máximo 5 palavras, adequada para Libras. Não explique. Não dê exemplos. Apenas a frase.`,
+                        text: `Gere apenas UMA frase curta utilizando ${contexto}, com no máximo 10 palavras, adequada para Libras. Não explique. Não dê exemplos. Apenas a frase.`,
                       },
                     ],
                   },
