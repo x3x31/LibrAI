@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LibrAI</title>
+
+    <link rel="manifest" href="manifest.json" />
+
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #f5f7fb;
+      }
+
+      header {
+        background: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      header img {
+        width: 45px;
+        border-radius: 50%;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      .banner {
+        background: linear-gradient(90deg, #4f8cff, #2563eb);
+        color: white;
+        border-radius: 15px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .banner img {
+        width: 90px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      textarea,
+      .input-area {
+        width: -webkit-fill-available;
+        height: 90px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        overflow-y: auto;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        margin-top: 0px;
+        background: linear-gradient(90deg, #4f8cff, #2563eb);
+        color: white;
+        cursor: pointer;
+      }
+
+      .btn-voltar {
+        display: none;
+        width: auto;
+        padding: 8px 16px;
+        margin-top: 0;
+        margin-bottom: 10px;
+        background: white;
+        color: #2563eb;
+        border: 1px solid #2563eb;
+        font-weight: 600;
+      }
+
+      .btn-voltar.visivel {
+        display: inline-block;
+      }
+
+      .categories .category {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        padding: 12px;
+        border-radius: 12px;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+
+      .categories img {
+        width: 50px;
+      }
+
+      .grid {
+        display: none;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .grid.visivel {
+        display: grid;
+      }
+
+      .item {
+        background: white;
+        border-radius: 12px;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .item img {
+        width: 18vw;
+        object-fit: contain;
+      }
+
+      .item button {
+        margin-top: 6px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      div[vw] {
+        z-index: 2147483647 !important;
+      }
+
+      [vw-plugin-wrapper] {
+        z-index: 2147483647 !important;
+      }
+
+      [vp-click-blocker],
+      [vp-click-blocker].vp-enabled {
+        display: none !important;
+        pointer-events: none !important;
+      }
+
+      [vw-access-button] {
+        transition: none !important;
+      }
+
+      [vw-access-button]:hover {
+        width: 40px !important;
+      }
+
+      .vw-links {
+        display: none !important;
+      }
+
+      p {
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <img src="https://i.pravatar.cc/100" />
+      <div>
+        <strong>Olá, Usuário 👋</strong><br />
+        <small>usuario@email.com</small>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="banner">
+        <div>
+          <h2>VLibras</h2>
+          <p>Traduza com inclusão</p>
+        </div>
+        <img src="img/banners/sentimentos.png" />
+      </div>
+
+      <div class="card">
+        <div id="texto" class="input-area" contenteditable="true"></div>
+
+        <button id="btnTraduzir">Traduzir</button>
+        <button id="btnSugerirFrase">✨ IA sugerir frase</button>
+      </div>
+
+      <button id="btnVoltar" class="btn-voltar">← Voltar</button>
+
+      <h3 id="tituloSecao">Categorias</h3>
+
+      <div class="categories" id="listaCategorias">
+        <div class="category" data-categoria="cumprimentos">
+          <img src="img/banners/cumprimentos.png" />
+          Cumprimentos
+        </div>
+
+        <div class="category" data-categoria="objetos">
+          <img src="img/banners/objetos.png" />
+          Objetos de sala
+        </div>
+
+        <div class="category" data-categoria="sentimentos">
+          <img src="img/banners/sentimentos.png" />
+          Sentimentos
+        </div>
+      </div>
+
+      <div class="grid" id="listaItens"></div>
+    </div>
+
+    <!-- VLibras -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+
+    <script>
+      new window.VLibras.Widget("https://vlibras.gov.br/app");
+
+      const dados = {
+        cumprimentos: [
+          { nome: "Olá", img: "img/cumprimentos/ola.png" },
+          { nome: "Oi", img: "img/cumprimentos/oi.png" },
+          { nome: "Bom dia", img: "img/cumprimentos/bom_dia.png" },
+          { nome: "Boa tarde", img: "img/cumprimentos/boa_tarde.png" },
+          { nome: "Boa noite", img: "img/cumprimentos/boa_noite.png" },
+          { nome: "Tudo bem", img: "img/cumprimentos/tudo_bem.png" },
+          { nome: "Bem vindo", img: "img/cumprimentos/bem_vindo.png" },
+          { nome: "Até logo", img: "img/cumprimentos/ate_logo.png" },
+          { nome: "Até mais", img: "img/cumprimentos/ate_mais.png" },
+          { nome: "Tchau", img: "img/cumprimentos/tchau.png" },
+          { nome: "Obrigado", img: "img/cumprimentos/obrigado.png" },
+          { nome: "Por favor", img: "img/cumprimentos/por_favor.png" },
+        ],
+
+        objetos: [
+          { nome: "Cadeira", img: "img/objetos/Cadeira.png" },
+          { nome: "Mesa", img: "img/objetos/Mesa.png" },
+          { nome: "Quadro", img: "img/objetos/Quadro.png" },
+          { nome: "Lápis", img: "img/objetos/Lapis.png" },
+          { nome: "Mochila", img: "img/objetos/Mochila.png" },
+          { nome: "Borracha", img: "img/objetos/Borracha.png" },
+          { nome: "Caderno", img: "img/objetos/Caderno.png" },
+          { nome: "Livro", img: "img/objetos/Livro.png" },
+        ],
+
+        sentimentos: [
+          { nome: "Feliz", img: "img/sentimentos/Feliz.png" },
+          { nome: "Triste", img: "img/sentimentos/Triste.png" },
+          { nome: "Surpreso(a)", img: "img/sentimentos/Surpreso.png" },
+          { nome: "Bravo(a)", img: "img/sentimentos/Bravo.png" },
+          { nome: "Pensativo(a)", img: "img/sentimentos/Pensativo.png" },
+          { nome: "Agradecido(a)", img: "img/sentimentos/Agradecido.png" },
+          { nome: "Com medo", img: "img/sentimentos/Com_medo.png" },
+          { nome: "Aliviado(a)", img: "img/sentimentos/Aliviado.png" },
+        ],
+      };
+
+      let categoriaAtual = "";
+
+      const textoEl = document.getElementById("texto");
+      const listaCategorias = document.getElementById("listaCategorias");
+      const listaItens = document.getElementById("listaItens");
+      const tituloSecao = document.getElementById("tituloSecao");
+      const btnVoltar = document.getElementById("btnVoltar");
+
+      function abrirCategoria(cat) {
+        categoriaAtual = cat;
+
+        listaCategorias.classList.add("hidden");
+        listaItens.classList.add("visivel");
+        tituloSecao.innerText = cat.toUpperCase();
+        btnVoltar.classList.add("visivel");
+
+        listaItens.innerHTML = "";
+
+        dados[cat].forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "item";
+
+          const img = document.createElement("img");
+          img.src = item.img;
+
+          const btn = document.createElement("button");
+          btn.textContent = item.nome;
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            textoEl.innerText = item.nome;
+          });
+
+          div.appendChild(img);
+          div.appendChild(btn);
+          listaItens.appendChild(div);
+        });
+      }
+
+      function voltar() {
+        categoriaAtual = "";
+        listaCategorias.classList.remove("hidden");
+        listaItens.classList.remove("visivel");
+        tituloSecao.innerText = "Categorias";
+        btnVoltar.classList.remove("visivel");
+      }
+
+      let pluginInicializado = false;
+
+      async function iniciarPlugin() {
+        if (pluginInicializado && window.plugin?.player?.loaded) return;
+
+        document.querySelector("[vw-access-button]").click();
+
+        return new Promise((resolve) => {
+          const check = setInterval(() => {
+            if (window.plugin && window.plugin.player?.loaded) {
+              clearInterval(check);
+              pluginInicializado = true;
+
+              const originalTranslate = window.plugin.translate.bind(window.plugin);
+              window.plugin.translate = function (texto) {
+                const conteudo = textoEl.innerText.trim();
+                if (conteudo) originalTranslate(conteudo);
+              };
+
+              resolve();
+            }
+          }, 100);
+        });
+      }
+
+      async function traduzirEExibir(texto) {
+        await iniciarPlugin();
+        window.plugin.translate(texto);
+      }
+
+      async function sugerirFrase() {
+        let contexto = "";
+
+        if (categoriaAtual === "sentimentos") contexto = "sobre sentimentos";
+        else if (categoriaAtual === "objetos") contexto = "sobre sala de aula";
+        else if (categoriaAtual === "cumprimentos") contexto = "de cumprimento";
+        else {
+          const atual = textoEl.innerText.trim();
+          if (atual) contexto = `relacionado a "${atual}"`;
+          else contexto = "de cumprimento";
+        }
+
+        textoEl.innerText = "Carregando...";
+
+        try {
+          const resposta = await fetch(
+            "https://generativelanguage.googleapis.com/v1/models/gemini-flash-latest:generateContent?key=AQ.Ab8RN6JmU1d4_m7ieXv2rO697iflyd0rYOhkKQUCEgMaiBfBw",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      {
+                        text: `Gere apenas UMA frase curta utilizando ${contexto}, com no máximo 10 palavras, adequada para Libras. Não explique. Não dê exemplos. Apenas a frase.`,
+                      },
+                    ],
+                  },
+                ],
+              }),
+            },
+          );
+
+          const data = await resposta.json();
+
+          const texto =
+            data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+            "Erro ao gerar resposta";
+
+          textoEl.innerText = texto;
+          traduzirEExibir(texto);
+        } catch (erro) {
+          textoEl.innerText = "Erro: " + erro;
+          console.error(erro);
+        }
+      }
+
+      document.getElementById("btnTraduzir").addEventListener("click", (e) => {
+        e.stopPropagation();
+        const texto = textoEl.innerText.trim();
+        if (texto) traduzirEExibir(texto);
+      });
+
+      document.getElementById("btnSugerirFrase").addEventListener("click", (e) => {
+        e.stopPropagation();
+        sugerirFrase();
+      });
+
+      btnVoltar.addEventListener("click", (e) => {
+        e.stopPropagation();
+        voltar();
+      });
+
+      document.querySelectorAll(".category").forEach((el) => {
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          abrirCategoria(el.dataset.categoria);
+        });
+      });
+    </script>
+  </body>
+</html>
