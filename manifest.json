@@ -1,10 +1,24 @@
 {
-  "name": "VLibras App",
-  "short_name": "VLibras",
-  "description": "Aplicativo de tradução para Libras com VLibras",
+  "name": "LibrAI",
+  "short_name": "LibrAI",
+  "description": "Plataforma de aprendizado com tradução em Libras",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#f5f7fb",
+  "background_color": "#2563eb",
   "theme_color": "#2563eb",
-  "lang": "pt-BR"
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }

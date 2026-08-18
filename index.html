@@ -6,6 +6,12 @@
     <title>LibrAI</title>
 
     <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+    <link rel="apple-touch-icon" href="img/icon-192.png" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="LibrAI" />
 
 
     <script>
@@ -67,20 +73,46 @@
 
       header {
         background: white;
-        padding: 15px;
+        padding: 8px 16px;
         display: flex;
         align-items: center;
         gap: 10px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
       header img {
-        width: 45px;
-        border-radius: 50%;
+        height: 40px;
+        width: 120px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      .header-info {
+        margin-left: auto;
+        text-align: right;
+      }
+      .header-info strong {
+        font-size: 20px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
       }
 
       .container {
         padding: 15px;
+        padding-bottom: 80px;
       }
 
       .banner {
@@ -227,57 +259,445 @@
         margin-block-start: 0em;
         margin-block-end: 0em;
       }
+
+      /* Bottom Navigation */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 430px;
+        height: 64px;
+        background: white;
+        border-top: 1px solid #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        z-index: 200;
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 16px;
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s;
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+      .nav-item.active {
+        color: #2563eb;
+        font-weight: 600;
+      }
+      .nav-item.active::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: 24px;
+        height: 3px;
+        background: #2563eb;
+        border-radius: 3px 3px 0 0;
+      }
+      .nav-icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      /* Page Views */
+      .page-view {
+        display: none;
+      }
+      .page-view.active {
+        display: block;
+      }
+
+      /* Info Pages (EduBase style) */
+      .info-hero {
+        margin: 0 16px;
+        padding: 24px 20px;
+        background: linear-gradient(135deg, #e8f4fd 0%, #bbdefb 100%);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      .info-hero::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 160px;
+        height: 160px;
+        background: rgba(255,255,255,0.4);
+        border-radius: 50%;
+      }
+      .info-hero h1 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1565c0;
+        position: relative;
+      }
+      .info-hero.theme-purple {
+        background: linear-gradient(135deg, #f2f0ff 0%, #e8e4f8 100%);
+      }
+      .info-hero.theme-purple h1 {
+        color: #624693;
+      }
+      .info-hero.theme-orange {
+        background: linear-gradient(135deg, #fff8f0 0%, #ffedd5 100%);
+      }
+      .info-hero.theme-orange h1 {
+        color: #e8752a;
+      }
+
+      .section {
+        padding: 20px 16px;
+        padding-bottom: 80px;
+      }
+      .section-header {
+        margin-bottom: 16px;
+      }
+      .section-header h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a2e;
+      }
+      .section-header p {
+        font-size: 13px;
+        color: #6b7280;
+        margin-top: 2px;
+      }
+
+      .info-content {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .info-block {
+        background: white;
+        border: 1px solid #f3f4f6;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      }
+      .info-block p {
+        font-size: 13px;
+        color: #1a1a2e;
+        line-height: 1.6;
+        margin-bottom: 10px;
+        text-align: justify;
+      }
+      .info-block p:last-child {
+        margin-bottom: 0;
+      }
+      .info-block strong {
+        color: #1565c0;
+      }
+      .info-block ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .info-block ul li {
+        font-size: 13px;
+        color: #4a5568;
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .info-block ul li:last-child {
+        border-bottom: none;
+      }
+      .info-block ul li .li-icon {
+        width: 32px;
+        height: 32px;
+        background: #e3f2fd;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      /* Author photo block */
+      .info-block-autora {
+        position: relative;
+        padding-right: 100px;
+      }
+      .autora-foto {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        border: 4px solid #e3f2fd;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+      }
     </style>
   </head>
 
   <body>
-    <header>
-      <img src="https://i.pravatar.cc/100" />
-      <div>
-        <strong>Olá, Usuário 👋</strong><br />
-        <small>usuario@email.com</small>
+    <!-- Splash Screen -->
+    <div id="splash" style="
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s;
+    ">
+      <img src="img/librai.png" alt="LibrAI" style="width: 120px; height: auto; margin-bottom: 20px; border-radius: 16px;" />
+      <strong style="
+        font-size: 32px;
+        font-weight: 800;
+        color: white;
+        letter-spacing: -0.5px;
+      ">LibrAI</strong>
+      <p style="
+        font-size: 14px;
+        color: rgba(255,255,255,0.8);
+        margin-top: 8px;
+      ">Tradução em Libras com IA</p>
+    </div>
+
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var splash = document.getElementById('splash');
+          if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(function() { splash.remove(); }, 500);
+          }
+        }, 1500);
+      });
+    </script>
+
+    <header id="main-header">
+      <div class="header-brand">
+        <img src="img/header/UERN.png" alt="UERN" style="height: 45px;" />
+        <img src="img/header/PROFEI.png" alt="PROFEI" style="height: 55px;" />
       </div>
     </header>
 
-    <div class="container">
-      <div class="banner">
-        <div>
-          <h2>VLibras</h2>
-          <p>Traduza com inclusão</p>
-        </div>
-        <img src="img/banners/sentimentos.png" />
-      </div>
-
-      <div class="card">
-        <div id="texto" class="input-area" contenteditable="true"></div>
-
-        <button id="btnTraduzir">Traduzir</button>
-        <button id="btnSugerirFrase">✨ IA sugerir frase</button>
-      </div>
-
-      <button id="btnVoltar" class="btn-voltar">← Voltar</button>
-
-      <h3 id="tituloSecao">Categorias</h3>
-
-      <div class="categories" id="listaCategorias">
-        <div class="category" data-categoria="cumprimentos">
-          <img src="img/banners/cumprimentos.png" />
-          Cumprimentos
+    <!-- VIEW: Início -->
+    <div id="view-inicio" class="page-view active">
+      <div class="container">
+        <div class="banner">
+          <div>
+            <h2>LibrAI</h2>
+            <p>Traduza com inclusão</p>
+          </div>
+          <img src="img/librai.png" alt="LibrAI" style="height: 80px; border-radius: 12px;" />
         </div>
 
-        <div class="category" data-categoria="objetos">
-          <img src="img/banners/objetos.png" />
-          Objetos de sala
+        <div class="card">
+          <div id="texto" class="input-area" contenteditable="true"></div>
+
+          <button id="btnTraduzir">Traduzir</button>
+          <button id="btnSugerirFrase">✨ IA sugerir frase</button>
         </div>
 
-        <div class="category" data-categoria="sentimentos">
+        <button id="btnVoltar" class="btn-voltar">← Voltar</button>
+
+        <h3 id="tituloSecao">Categorias</h3>
+
+        <div class="categories" id="listaCategorias">
+          <div class="category" data-categoria="cumprimentos">
+            <img src="img/banners/cumprimentos.png" />
+            Cumprimentos
+          </div>
+
+          <div class="category" data-categoria="objetos">
+            <img src="img/banners/objetos.png" />
+            Objetos de sala
+          </div>
+
+          <div class="category" data-categoria="sentimentos">
           <img src="img/banners/sentimentos.png" />
-          Sentimentos
+            Sentimentos
+          </div>
         </div>
-      </div>
 
-      <div class="grid" id="listaItens"></div>
+        <div class="grid" id="listaItens"></div>
+      </div>
     </div>
+
+    <!-- VIEW: Sobre a Plataforma -->
+    <div id="view-plataforma" class="page-view">
+      <div class="info-hero">
+        <h1>Recurso educacional</h1>
+      </div>
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Sobre o LibrAI</h2>
+            <p>Conheça o objetivo, o público-alvo e como utilizar</p>
+          </div>
+        </div>
+        <div class="info-content">
+          <div class="info-block">
+            <p>
+              Este recurso educacional foi desenvolvido com o propósito de promover a
+              <strong>inclusão digital de pessoas surdas</strong>, facilitando a comunicação
+              entre surdos e ouvintes através da tecnologia.
+            </p>
+          </div>
+          <div class="info-block">
+            <p><strong>Objetivo:</strong></p>
+            <p>
+              Facilitar o acesso de estudantes, professores e profissionais da educação
+              à tradução de texto em português para <strong>Libras</strong> (Língua Brasileira
+              de Sinais) em tempo real, utilizando a tecnologia do <strong>VLibras</strong>,
+              projeto do Governo Federal.
+            </p>
+          </div>
+          <div class="info-block">
+            <p><strong>Público-alvo:</strong></p>
+            <p>
+              Estudantes surdos e ouvintes, professores, intérpretes de Libras,
+              gestores escolares e demais profissionais da educação que buscam
+              ferramentas de inclusão digital.
+            </p>
+          </div>
+          <div class="info-block">
+            <p><strong>Como utilizar este recurso?</strong></p>
+            <p>
+              1. Na tela <strong>Início</strong>, digite ou selecione uma frase em português
+              e clique em <strong>Traduzir</strong> para receber a tradução em Libras via widget do VLibras.
+            </p>
+            <p>
+              2. Navegue pelas <strong>categorias temáticas</strong> (Cumprimentos, Objetos de Sala,
+              Sentimentos) para aprender vocabulário essencial com imagens ilustrativas.
+            </p>
+            <p>
+              3. Utilize o botão <strong>IA sugerir frase</strong> para receber sugestões
+              automáticas de frases curtas adequadas para Libras.
+            </p>
+          </div>
+          <div class="info-block">
+            <p><strong>Funcionalidades:</strong></p>
+            <ul>
+              <li><span class="li-icon">🗣️</span> Tradução em tempo real para Libras com avatar virtual</li>
+              <li><span class="li-icon">📚</span> Categorias temáticas com imagens dos sinais</li>
+              <li><span class="li-icon">✨</span> Sugestão de frases por Inteligência Artificial (Gemini)</li>
+              <li><span class="li-icon">📱</span> PWA instalável — funciona como app no celular e desktop</li>
+              <li><span class="li-icon">🌐</span> Interface acessível e responsiva</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <p><strong>Tecnologias utilizadas:</strong></p>
+            <ul>
+              <li><span class="li-icon">⚡</span> HTML, CSS & JavaScript (single-file)</li>
+              <li><span class="li-icon">🎓</span> VLibras — Widget de tradução para Libras (Governo Federal)</li>
+              <li><span class="li-icon">🧠</span> Google Gemini API — Sugestão de frases por IA</li>
+              <li><span class="li-icon">📱</span> Progressive Web App (PWA)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW: Sobre o Autor -->
+    <div id="view-autor" class="page-view">
+      <div class="info-hero theme-purple">
+        <h1>Conheça a autora</h1>
+      </div>
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Sobre a autora</h2>
+            <p>Quem está por trás deste recurso educacional</p>
+          </div>
+        </div>
+        <div class="info-content">
+          <div class="info-block info-block-autora">
+            <div class="autora-foto">👩‍💻</div>
+            <p><strong>Olá!</strong></p>
+            <p>Eu sou <strong>Verônica</strong>.</p>
+            <p>
+              Estudante de Tecnologia da Informação com foco em acessibilidade e
+              inclusão digital. Desenvolvedora do LibrAI como parte de projeto de
+              pesquisa em educação inclusiva, buscando facilitar a comunicação
+              entre surdos e ouvintes através da tecnologia.
+            </p>
+          </div>
+          <div class="info-block">
+            <p><strong>Áreas de atuação:</strong></p>
+            <ul>
+              <li><span class="li-icon">💻</span> Desenvolvimento Web & Mobile</li>
+              <li><span class="li-icon">♿</span> Acessibilidade Digital</li>
+              <li><span class="li-icon">🤖</span> Inteligência Artificial Aplicada</li>
+              <li><span class="li-icon">📖</span> Educação Inclusiva</li>
+              <li><span class="li-icon">🤟</span> Tecnologias para Libras</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <p><strong>Sobre o projeto:</strong></p>
+            <p>
+              O LibrAI surgiu da necessidade de criar ferramentas acessíveis que
+              aproximem a comunidade surda do conteúdo educacional. Utilizando APIs
+              de tradução para Libras e inteligência artificial, o projeto visa ser
+              um canal de inclusão digital para estudantes e profissionais da educação.
+            </p>
+            <p>
+              Espero que este recurso possa contribuir com o trabalho de professores,
+              gestores e demais profissionais da educação, favorecendo o acesso à
+              informação e fortalecendo práticas educacionais inclusivas.
+            </p>
+          </div>
+          <div class="info-block">
+            <p><strong>Contato:</strong></p>
+            <ul>
+              <li><span class="li-icon">🏛️</span> UERN / PROFEI</li>
+              <li><span class="li-icon">📧</span> veronica@uern.br</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="inicio">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+        <span>Início</span>
+      </button>
+      <button class="nav-item" data-view="plataforma">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+        <span>Plataforma</span>
+      </button>
+      <button class="nav-item" data-view="autor">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>Autor</span>
+      </button>
+    </nav>
 
     <!-- VLibras -->
     <div vw class="enabled">
@@ -516,6 +936,32 @@
           abrirCategoria(el.dataset.categoria);
         });
       });
+
+      // Bottom Navigation
+      document.querySelectorAll(".nav-item").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var view = this.dataset.view;
+
+          document.querySelectorAll(".page-view").forEach(function (v) {
+            v.classList.remove("active");
+          });
+          document.getElementById("view-" + view).classList.add("active");
+
+          document.querySelectorAll(".nav-item").forEach(function (n) {
+            n.classList.remove("active");
+          });
+          this.classList.add("active");
+
+          document.getElementById("main-header").style.display = "flex";
+
+          window.scrollTo(0, 0);
+        });
+      });
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js');
+      }
     </script>
   </body>
 </html>
