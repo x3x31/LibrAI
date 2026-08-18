@@ -7,10 +7,11 @@
 
     <link rel="manifest" href="manifest.json" />
 
+
     <script>
       (function () {
-        const VW_INTERACTIVE = 'button, .category, .item, .btn-voltar, #btnTraduzir, #btnSugerirFrase';
-        const orig = Document.prototype.addEventListener;
+        var VW_INTERACTIVE = 'button, .category, .item, .btn-voltar, #btnTraduzir, #btnSugerirFrase';
+        var orig = Document.prototype.addEventListener;
 
         Document.prototype.addEventListener = function (type, listener, options) {
           if (typeof listener !== 'function') {
@@ -18,7 +19,7 @@
           }
 
           if (type === 'click' && options === true) {
-            const wrapped = function (e) {
+            var wrapped = function (e) {
               if (e.target.closest && e.target.closest(VW_INTERACTIVE)) return;
               return listener.call(this, e);
             };
@@ -26,21 +27,33 @@
           }
 
           if (type === 'mouseover') {
-            const wrapped = function (e) {
-              return;
-            };
+            var wrapped = function (e) { return; };
             return orig.call(this, type, wrapped, options);
           }
 
           if (type === 'mouseout') {
-            const wrapped = function (e) {
-              return;
-            };
+            var wrapped = function (e) { return; };
             return orig.call(this, type, wrapped, options);
           }
 
           return orig.call(this, type, listener, options);
         };
+      })();
+    </script>
+    <script>
+      (function () {
+        var patchInterval = setInterval(function () {
+          if (window.plugin && window.plugin.player && window.plugin.player.playWellcome && !window.plugin.player._welcomePatched) {
+            var p = window.plugin.player;
+            p._welcomePatched = true;
+            p.playWellcome = function () {
+              p.emit("start:welcome");
+              p.emit("stop:welcome");
+              p.skipped = true;
+            };
+          }
+        }, 50);
+        setTimeout(function () { clearInterval(patchInterval); }, 30000);
       })();
     </script>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
@@ -390,6 +403,16 @@
             if (window.plugin && window.plugin.player?.loaded) {
               clearInterval(check);
               pluginInicializado = true;
+
+              var p = window.plugin.player;
+              if (p.translator && p.translator.translate && !p.translator._patched) {
+                var origTrans = p.translator.translate.bind(p.translator);
+                p.translator._patched = true;
+                p.translator.translate = function (text, domain, cb) {
+                  return origTrans(text, "vlibras.gov.br", cb);
+                };
+              }
+
               resolve();
             }
           }, 100);
