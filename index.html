@@ -304,6 +304,11 @@
       }).observe(document.body, { childList: true, subtree: true });
       new window.VLibras.Widget("https://vlibras.gov.br/app");
 
+      setTimeout(function () {
+        var btn = document.querySelector("div[vw-access-button]");
+        if (btn) btn.click();
+      }, 3000);
+
       const dados = {
         cumprimentos: [
           { nome: "Olá", img: "img/cumprimentos/ola.png" },
