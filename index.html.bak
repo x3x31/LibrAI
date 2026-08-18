@@ -7,42 +7,6 @@
 
     <link rel="manifest" href="manifest.json" />
 
-    <script>
-      (function () {
-        const VW_INTERACTIVE = 'button, .category, .item, .btn-voltar, #btnTraduzir, #btnSugerirFrase';
-        const orig = Document.prototype.addEventListener;
-
-        Document.prototype.addEventListener = function (type, listener, options) {
-          if (typeof listener !== 'function') {
-            return orig.call(this, type, listener, options);
-          }
-
-          if (type === 'click' && options === true) {
-            const wrapped = function (e) {
-              if (e.target.closest && e.target.closest(VW_INTERACTIVE)) return;
-              return listener.call(this, e);
-            };
-            return orig.call(this, type, wrapped, options);
-          }
-
-          if (type === 'mouseover') {
-            const wrapped = function (e) {
-              return;
-            };
-            return orig.call(this, type, wrapped, options);
-          }
-
-          if (type === 'mouseout') {
-            const wrapped = function (e) {
-              return;
-            };
-            return orig.call(this, type, wrapped, options);
-          }
-
-          return orig.call(this, type, listener, options);
-        };
-      })();
-    </script>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
     <style>
@@ -201,16 +165,6 @@
         display: none !important;
       }
 
-      #texto {
-        user-select: text !important;
-        -webkit-user-select: text !important;
-      }
-
-      button, .category, .item, .btn-voltar {
-        user-select: none !important;
-        -webkit-user-select: none !important;
-      }
-
       p {
         margin-block-start: 0em;
         margin-block-end: 0em;
@@ -347,7 +301,6 @@
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
             textoEl.innerText = item.nome;
-            traduzirEExibir(item.nome);
           });
 
           div.appendChild(img);
