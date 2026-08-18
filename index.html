@@ -394,9 +394,12 @@
       let traduzindo = false;
 
       async function iniciarPlugin() {
-        if (pluginInicializado && window.plugin?.player?.loaded) return;
+        var pluginAberto = document.querySelector("[vw-plugin-wrapper]")?.classList.contains("active");
+        if (pluginInicializado && window.plugin?.player?.loaded && pluginAberto) return;
 
-        document.querySelector("[vw-access-button]").click();
+        if (!pluginAberto) {
+          document.querySelector("[vw-access-button]").click();
+        }
 
         return new Promise((resolve) => {
           const check = setInterval(() => {
