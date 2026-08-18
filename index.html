@@ -183,9 +183,8 @@
         z-index: 2147483647 !important;
       }
 
-      [vp-click-blocker],
       [vp-click-blocker].vp-enabled {
-        display: none !important;
+        display: block !important;
         pointer-events: none !important;
       }
 
@@ -276,6 +275,20 @@
     </div>
 
     <script>
+      window.addEventListener("error", function (e) {
+        if (e.message && e.message.includes("classList")) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          return true;
+        }
+      }, true);
+      window.onerror = function (msg) {
+        if (msg && msg.includes("classList")) return true;
+      };
+      new MutationObserver(() => {
+        const dialog = document.querySelector("#unity-error-dialog, .unity-error-dialog, [class*='error']");
+        if (dialog) dialog.remove();
+      }).observe(document.body, { childList: true, subtree: true });
       new window.VLibras.Widget("https://vlibras.gov.br/app");
 
       const dados = {
