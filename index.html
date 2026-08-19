@@ -16,7 +16,7 @@
 
     <script>
       (function () {
-        var VW_INTERACTIVE = 'button, .category, .item, .btn-voltar, #btnTraduzir, #btnSugerirFrase';
+        var VW_INTERACTIVE = 'button, .category, .item, .btn-voltar, #btnTraduzir, #btnSugerirFrase, #btnLimpar';
         var orig = Document.prototype.addEventListener;
 
         Document.prototype.addEventListener = function (type, listener, options) {
@@ -152,17 +152,36 @@
         padding: 12px;
         border-radius: 10px;
         border: none;
-        margin-top: 0px;
+        margin-top: 8px;
         background: linear-gradient(90deg, #4f8cff, #2563eb);
         color: white;
         cursor: pointer;
+      }
+
+      .btn-traduzir-principal {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        margin-top: 12px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      }
+
+      .btn-traduzir-principal:active {
+        transform: scale(0.98);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
       }
 
       .btn-voltar {
         display: none;
         width: auto;
         padding: 8px 16px;
-        margin-top: 0;
+        margin-top: 15px;
         margin-bottom: 10px;
         background: white;
         color: #2563eb;
@@ -187,6 +206,68 @@
 
       .categories img {
         width: 50px;
+      }
+
+      .sugestoes-card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        margin-top: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .sugestoes-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: #374151;
+      }
+
+      .sugestoes-icon {
+        font-size: 18px;
+      }
+
+      .sugestoes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .sugestao-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f3f4f6;
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .sugestao-item:active {
+        background: #e5e7eb;
+      }
+
+      .sugestao-texto {
+        font-size: 14px;
+        color: #1f2937;
+        flex: 1;
+      }
+
+      .sugestao-traduzir {
+        background: linear-gradient(90deg, #4f8cff, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-left: 10px;
+        white-space: nowrap;
+        width: auto;
+        flex-shrink: 0;
       }
 
       .grid {
@@ -312,6 +393,13 @@
         height: 3px;
         background: #2563eb;
         border-radius: 3px 3px 0 0;
+      }
+      .nav-item.no-line.active {
+        color: #6b7280;
+        font-weight: 500;
+      }
+      .nav-item.no-line.active::after {
+        display: none;
       }
       .nav-icon {
         width: 22px;
@@ -460,44 +548,6 @@
   </head>
 
   <body>
-    <!-- Splash Screen -->
-    <div id="splash" style="
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s;
-    ">
-      <img src="img/librai.png" alt="LibrAI" style="width: 120px; height: auto; margin-bottom: 20px; border-radius: 16px;" />
-      <strong style="
-        font-size: 32px;
-        font-weight: 800;
-        color: white;
-        letter-spacing: -0.5px;
-      ">LibrAI</strong>
-      <p style="
-        font-size: 14px;
-        color: rgba(255,255,255,0.8);
-        margin-top: 8px;
-      ">Tradução em Libras com IA</p>
-    </div>
-
-    <script>
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          var splash = document.getElementById('splash');
-          if (splash) {
-            splash.style.opacity = '0';
-            setTimeout(function() { splash.remove(); }, 500);
-          }
-        }, 1500);
-      });
-    </script>
-
     <header id="main-header">
       <div class="header-brand">
         <img src="img/header/UERN.png" alt="UERN" style="height: 45px;" />
@@ -519,8 +569,9 @@
         <div class="card">
           <div id="texto" class="input-area" contenteditable="true"></div>
 
-          <button id="btnTraduzir">Traduzir</button>
-          <button id="btnSugerirFrase">✨ IA sugerir frase</button>
+          <button id="btnTraduzir" class="btn-traduzir-principal">Traduzir</button>
+          <button id="btnLimpar">Limpar</button>
+          <button id="btnSugerirFrase">✨ Sugerir frase com IA</button>
         </div>
 
         <button id="btnVoltar" class="btn-voltar">← Voltar</button>
@@ -542,6 +593,14 @@
           <img src="img/banners/sentimentos.png" />
             Sentimentos
           </div>
+        </div>
+
+        <div class="sugestoes-card" id="sugestoesCard">
+          <div class="sugestoes-header">
+            <span class="sugestoes-icon">💡</span>
+            <strong>Sugestões para praticar</strong>
+          </div>
+          <div class="sugestoes-list" id="sugestoesList"></div>
         </div>
 
         <div class="grid" id="listaItens"></div>
@@ -600,25 +659,6 @@
               automáticas de frases curtas adequadas para Libras.
             </p>
           </div>
-          <div class="info-block">
-            <p><strong>Funcionalidades:</strong></p>
-            <ul>
-              <li><span class="li-icon">🗣️</span> Tradução em tempo real para Libras com avatar virtual</li>
-              <li><span class="li-icon">📚</span> Categorias temáticas com imagens dos sinais</li>
-              <li><span class="li-icon">✨</span> Sugestão de frases por Inteligência Artificial (Gemini)</li>
-              <li><span class="li-icon">📱</span> PWA instalável — funciona como app no celular e desktop</li>
-              <li><span class="li-icon">🌐</span> Interface acessível e responsiva</li>
-            </ul>
-          </div>
-          <div class="info-block">
-            <p><strong>Tecnologias utilizadas:</strong></p>
-            <ul>
-              <li><span class="li-icon">⚡</span> HTML, CSS & JavaScript (single-file)</li>
-              <li><span class="li-icon">🎓</span> VLibras — Widget de tradução para Libras (Governo Federal)</li>
-              <li><span class="li-icon">🧠</span> Google Gemini API — Sugestão de frases por IA</li>
-              <li><span class="li-icon">📱</span> Progressive Web App (PWA)</li>
-            </ul>
-          </div>
         </div>
       </section>
     </div>
@@ -642,33 +682,24 @@
             <p>Eu sou <strong>Verônica</strong>.</p>
             <p>
               Estudante de Tecnologia da Informação com foco em acessibilidade e
-              inclusão digital. Desenvolvedora do LibrAI como parte de projeto de
-              pesquisa em educação inclusiva, buscando facilitar a comunicação
-              entre surdos e ouvintes através da tecnologia.
+              inclusão digital. Sou autora e desenvolvedora deste recurso educacional,
+              elaborado no âmbito de projeto de pesquisa em educação inclusiva.
             </p>
           </div>
           <div class="info-block">
-            <p><strong>Áreas de atuação:</strong></p>
-            <ul>
-              <li><span class="li-icon">💻</span> Desenvolvimento Web & Mobile</li>
-              <li><span class="li-icon">♿</span> Acessibilidade Digital</li>
-              <li><span class="li-icon">🤖</span> Inteligência Artificial Aplicada</li>
-              <li><span class="li-icon">📖</span> Educação Inclusiva</li>
-              <li><span class="li-icon">🤟</span> Tecnologias para Libras</li>
-            </ul>
-          </div>
-          <div class="info-block">
-            <p><strong>Sobre o projeto:</strong></p>
             <p>
-              O LibrAI surgiu da necessidade de criar ferramentas acessíveis que
-              aproximem a comunidade surda do conteúdo educacional. Utilizando APIs
-              de tradução para Libras e inteligência artificial, o projeto visa ser
-              um canal de inclusão digital para estudantes e profissionais da educação.
+              A criação deste recurso parte do compromisso com a inclusão digital de
+              pessoas surdas, buscando aproximar a comunidade escolar de ferramentas
+              que facilitem a comunicação entre surdos e ouvintes através da tecnologia.
             </p>
             <p>
               Espero que este recurso possa contribuir com o trabalho de professores,
-              gestores e demais profissionais da educação, favorecendo o acesso à
-              informação e fortalecendo práticas educacionais inclusivas.
+              professoras, gestores e demais profissionais da educação, favorecendo o
+              acesso à informação e fortalecendo práticas educacionais inclusivas.
+            </p>
+            <p>
+              Seja bem-vindo(a)! Espero que este espaço seja útil para sua prática e
+              para a construção de uma educação cada vez mais inclusiva.
             </p>
           </div>
           <div class="info-block">
@@ -793,14 +824,66 @@
       const listaItens = document.getElementById("listaItens");
       const tituloSecao = document.getElementById("tituloSecao");
       const btnVoltar = document.getElementById("btnVoltar");
+      const sugestoesList = document.getElementById("sugestoesList");
+
+      const sugestoes = [
+        "Bom dia",
+        "Como vai você?",
+        "Obrigado",
+        "Por favor",
+        "Com licença",
+        "Desculpe",
+        "Eu preciso de ajuda",
+        "Tudo bem",
+        "Até logo",
+        "Você pode me ajudar?",
+        "Eu estou aprendendo Libras",
+        "Como se chama?"
+      ];
+
+      let sugestaoIndex = 0;
+
+      function renderSugestoes() {
+        const itens = [];
+        for (let i = 0; i < 3; i++) {
+          const idx = (sugestaoIndex + i) % sugestoes.length;
+          itens.push(sugestoes[idx]);
+        }
+        sugestoesList.innerHTML = itens.map(texto => `
+          <div class="sugestao-item" data-texto="${texto}">
+            <span class="sugestao-texto">${texto}</span>
+            <button class="sugestao-traduzir" data-texto="${texto}">Traduzir</button>
+          </div>
+        `).join("");
+
+        sugestoesList.querySelectorAll(".sugestao-item").forEach(item => {
+          item.addEventListener("click", (e) => {
+            if (e.target.classList.contains("sugestao-traduzir")) return;
+            textoEl.innerText = item.dataset.texto;
+          });
+        });
+
+        sugestoesList.querySelectorAll(".sugestao-traduzir").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            textoEl.innerText = btn.dataset.texto;
+            traduzirEExibir(btn.dataset.texto);
+          });
+        });
+      }
+
+      renderSugestoes();
 
       function abrirCategoria(cat) {
         categoriaAtual = cat;
+        textoEl.innerText = "";
 
         listaCategorias.classList.add("hidden");
         listaItens.classList.add("visivel");
         tituloSecao.innerText = cat.toUpperCase();
         btnVoltar.classList.add("visivel");
+        document.querySelector('.nav-item[data-view="inicio"]').classList.add("no-line");
+        document.getElementById("sugestoesCard").classList.add("hidden");
 
         listaItens.innerHTML = "";
 
@@ -831,6 +914,10 @@
         listaItens.classList.remove("visivel");
         tituloSecao.innerText = "Categorias";
         btnVoltar.classList.remove("visivel");
+        document.querySelector('.nav-item[data-view="inicio"]').classList.remove("no-line");
+        document.getElementById("sugestoesCard").classList.remove("hidden");
+        sugestaoIndex = (sugestaoIndex + 3) % sugestoes.length;
+        renderSugestoes();
       }
 
       let pluginInicializado = false;
@@ -886,42 +973,88 @@
 
       async function sugerirFrase() {
         let contexto = "";
+        let isCategoria = false;
+        const atual = textoEl.innerText.trim();
 
-        if (categoriaAtual === "sentimentos") contexto = "sobre sentimentos";
-        else if (categoriaAtual === "objetos") contexto = "sobre sala de aula";
-        else if (categoriaAtual === "cumprimentos") contexto = "de cumprimento";
-        else {
-          const atual = textoEl.innerText.trim();
-          if (atual) contexto = `relacionado a "${atual}"`;
-          else contexto = "de cumprimento";
+        if (atual) {
+          contexto = `"${atual}"`;
+        } else if (categoriaAtual === "sentimentos") {
+          contexto = "sentimentos e emoções";
+          isCategoria = true;
+        } else if (categoriaAtual === "objetos") {
+          contexto = "objetos de sala de aula";
+          isCategoria = true;
+        } else if (categoriaAtual === "cumprimentos") {
+          contexto = "cumprimentos e saudações";
+          isCategoria = true;
+        } else {
+          fraseCotidiano();
+          return;
         }
 
         textoEl.innerText = "Carregando...";
 
+        const prompt = isCategoria
+          ? `Gere apenas UMA frase curta em português, com no máximo 10 palavras, adequada para tradução em Libras. A frase deve ser sobre o tema: ${contexto}. Não explique. Apenas a frase.`
+          : `Gere apenas UMA frase curta em português, com no máximo 10 palavras, adequada para tradução em Libras. A frase DEVE conter obrigatoriamente: ${contexto}. Não crie frases sem incluir esse conteúdo. Não explique. Apenas a frase.`;
+
         try {
-          const resposta = await fetch(
-            "https://generativelanguage.googleapis.com/v1/models/gemini-flash-latest:generateContent?key=AQ.Ab8RN6JmU1d4_m7ieXv2rO697iflyd0rYOhkKQUCEgMaiBfBw",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    parts: [
-                      {
-                        text: `Gere apenas UMA frase curta utilizando ${contexto}, com no máximo 10 palavras, adequada para Libras. Não explique. Não dê exemplos. Apenas a frase.`,
-                      },
-                    ],
-                  },
-                ],
-              }),
+          const resposta = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer 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",
             },
-          );
+            body: JSON.stringify({
+              model: "openai/gpt-oss-20b",
+              messages: [
+                {
+                  role: "user",
+                  content: prompt,
+                },
+              ],
+            }),
+          });
 
           const data = await resposta.json();
 
           const texto =
-            data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+            data?.choices?.[0]?.message?.content ||
+            "Erro ao gerar resposta";
+
+          textoEl.innerText = texto;
+          traduzirEExibir(texto);
+        } catch (erro) {
+          textoEl.innerText = "Erro: " + erro;
+          console.error(erro);
+        }
+      }
+
+      async function fraseCotidiano() {
+        textoEl.innerText = "Carregando...";
+
+        try {
+          const resposta = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer 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",
+            },
+            body: JSON.stringify({
+              model: "openai/gpt-oss-20b",
+              messages: [
+                {
+                  role: "user",
+                  content: `Gere apenas UMA frase curta do cotidiano em português, com no máximo 10 palavras, adequada para tradução em Libras. A frase deve ser algo útil do dia a dia. Não explique. Apenas a frase.`,
+                },
+              ],
+            }),
+          });
+
+          const data = await resposta.json();
+
+          const texto =
+            data?.choices?.[0]?.message?.content ||
             "Erro ao gerar resposta";
 
           textoEl.innerText = texto;
@@ -941,6 +1074,11 @@
       document.getElementById("btnSugerirFrase").addEventListener("click", (e) => {
         e.stopPropagation();
         sugerirFrase();
+      });
+
+      document.getElementById("btnLimpar").addEventListener("click", (e) => {
+        e.stopPropagation();
+        textoEl.innerText = "";
       });
 
       btnVoltar.addEventListener("click", (e) => {
@@ -970,11 +1108,15 @@
           });
           this.classList.add("active");
 
+          textoEl.innerText = "";
+          voltar();
+
           document.getElementById("main-header").style.display = "flex";
 
           window.scrollTo(0, 0);
         });
       });
+
     </script>
     <script>
       if ('serviceWorker' in navigator) {
