@@ -245,6 +245,14 @@
         display: none !important;
       }
 
+      #unity-error-dialog,
+      .unity-error-dialog,
+      #unity-container,
+      .webgl-content {
+        display: none !important;
+        visibility: hidden !important;
+      }
+
       #texto {
         user-select: text !important;
         -webkit-user-select: text !important;
@@ -709,19 +717,29 @@
 
     <script>
       window.addEventListener("error", function (e) {
-        if (e.message && e.message.includes("classList")) {
+        var msg = e.message || "";
+        if (msg.includes("classList") || msg.includes("Script error") || msg.includes("Unity") || msg.includes("undefined") || (e.filename && e.filename.includes("UnityLoader"))) {
           e.stopImmediatePropagation();
           e.preventDefault();
           return true;
         }
       }, true);
-      window.onerror = function (msg) {
-        if (msg && msg.includes("classList")) return true;
+      window.onerror = function (msg, src, line, col, err) {
+        if (!msg) return false;
+        if (msg.includes("classList") || msg.includes("Script error") || msg.includes("Unity") || (src && src.includes("UnityLoader"))) {
+          return true;
+        }
+        return false;
       };
-      new MutationObserver(() => {
-        const dialog = document.querySelector("#unity-error-dialog, .unity-error-dialog, [class*='error']");
-        if (dialog) dialog.remove();
-      }).observe(document.body, { childList: true, subtree: true });
+      window.addEventListener("unhandledrejection", function (e) {
+        e.preventDefault();
+      }, true);
+      function removeUnityErrors() {
+        var selectors = "#unity-error-dialog, .unity-error-dialog, #unity-container, .webgl-content, [class*='unity-error']";
+        document.querySelectorAll(selectors).forEach(function(el) { el.remove(); });
+      }
+      new MutationObserver(removeUnityErrors).observe(document.body, { childList: true, subtree: true });
+      setInterval(removeUnityErrors, 500);
       new window.VLibras.Widget("https://vlibras.gov.br/app");
 
       setTimeout(function () {
