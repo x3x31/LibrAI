@@ -6,6 +6,7 @@
     <title>LibrAI</title>
 
     <link rel="manifest" href="manifest.json" />
+    <link rel="preconnect" href="https://vlibras.gov.br" crossorigin />
     <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
     <link rel="apple-touch-icon" href="img/icon-192.png" />
     <meta name="theme-color" content="#2563eb" />
@@ -166,11 +167,40 @@
         font-weight: 600;
         cursor: pointer;
         box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
       }
 
       .btn-traduzir-principal:active {
         transform: scale(0.98);
         box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+      }
+
+      .btn-traduzir-principal:disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+      }
+
+      .btn-traduzir-principal .spinner {
+        display: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: girar 0.8s linear infinite;
+      }
+
+      .btn-traduzir-principal.carregando .spinner {
+        display: inline-block;
+      }
+
+      @keyframes girar {
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       .btn-voltar {
@@ -543,7 +573,10 @@
         <div class="card">
           <div id="texto" class="input-area" contenteditable="true"></div>
 
-          <button id="btnTraduzir" class="btn-traduzir-principal">Traduzir</button>
+          <button id="btnTraduzir" class="btn-traduzir-principal carregando" disabled aria-busy="true">
+            <span>Traduzir</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
           <button id="btnLimpar">Limpar</button>
           <button id="btnSugerirFrase">✨ Sugerir frase com IA</button>
         </div>
@@ -714,9 +747,124 @@
     </div>
 
     <script>
+      let widgetPodeAbrir = false;
+      let widgetCarregamentoIniciado = false;
+
+      const btnTraduzir = document.getElementById("btnTraduzir");
+
+      const definirCarregamentoTraduzir = (carregando) => {
+        btnTraduzir.disabled = carregando;
+        btnTraduzir.classList.toggle("carregando", carregando);
+        btnTraduzir.setAttribute("aria-busy", carregando ? "true" : "false");
+      };
+
+      const verificadorPlugin = setInterval(() => {
+        if (typeof window.plugin?.translate !== "function") return;
+        pluginInicializado = true;
+        definirCarregamentoTraduzir(false);
+        clearInterval(verificadorPlugin);
+      }, 100);
+      setTimeout(() => clearInterval(verificadorPlugin), 30000);
+
+      const abrirWidget = () => {
+        if (!window.VLibrasWidget?.open) return;
+        if (widgetCarregamentoIniciado) {
+          const root = document.getElementById("vlibras-app-root");
+          if (root) root.dataset.active = "true";
+          return;
+        }
+        widgetCarregamentoIniciado = true;
+        window.VLibrasWidget.open();
+      };
+
+      let apresentacaoPulada = false;
+      let rootApresentacaoObservado = false;
+
+      const encerrarObservacaoApresentacao = () => {
+        apresentacaoPulada = true;
+        observerStatusApresentacao.disconnect();
+        observerRootApresentacao.disconnect();
+      };
+
+      const pularApresentacao = () => {
+        if (apresentacaoPulada) return;
+        const shadow = document.getElementById("vlibras-app-root")?.shadowRoot;
+        if (!shadow) return;
+        if (traducaoEnviada) {
+          encerrarObservacaoApresentacao();
+          return;
+        }
+        encerrarObservacaoApresentacao();
+        setTimeout(() => {
+          const botaoPular = Array.from(shadow.querySelectorAll("button")).find(
+            (botao) => (botao.textContent || "").trim() === "Pular"
+          );
+          if (botaoPular && !traducaoEnviada) {
+            botaoPular.dispatchEvent(new MouseEvent("click", { bubbles: true, composed: true }));
+          }
+          window.dispatchEvent(
+            new MessageEvent("message", {
+              data: { type: "unity_event", event: "finish_welcome", data: "True" },
+              source: shadow.querySelector("iframe")?.contentWindow,
+            })
+          );
+        }, 1000);
+      };
+
+      const observerStatusApresentacao = new MutationObserver(() => {
+        const root = document.getElementById("vlibras-app-root");
+        if (!root || root.dataset.status !== "playing") return;
+        pularApresentacao();
+      });
+
+      const observerRootApresentacao = new MutationObserver(() => {
+        const root = document.getElementById("vlibras-app-root");
+        if (!root || rootApresentacaoObservado) return;
+        rootApresentacaoObservado = true;
+        observerStatusApresentacao.observe(root, {
+          attributes: true,
+          attributeFilter: ["data-status"],
+        });
+        if (root.dataset.status === "playing") pularApresentacao();
+      });
+
+      observerRootApresentacao.observe(document.documentElement, { childList: true, subtree: true });
+
+      const manterWidgetEmFundo = () => {
+        const root = document.getElementById("vlibras-app-root");
+        if (root && !widgetPodeAbrir && root.dataset.active === "true") {
+          root.dataset.active = "false";
+        }
+      };
+
+      new MutationObserver(manterWidgetEmFundo).observe(document.documentElement, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ["data-active"],
+      });
+
+      document.addEventListener(
+        "click",
+        (e) => {
+          if (e.target && e.target.closest && e.target.closest("#vlibras-access-wrapper")) {
+            e.stopPropagation();
+            widgetPodeAbrir = true;
+            abrirWidget();
+          }
+        },
+        true
+      );
+
       if (window.VLibras && window.VLibras.Widget) {
+        try {
+          const raw = localStorage.getItem("@vlibras-widget");
+          if (raw && raw.includes('"isOpen":true')) {
+            localStorage.setItem("@vlibras-widget", raw.replace('"isOpen":true', '"isOpen":false'));
+          }
+        } catch (e) {}
+
         new window.VLibras.Widget({ rootPath: "https://vlibras.gov.br/app" });
-        window.VLibrasWidget?.open();
+        abrirWidget();
       }
 
       const dados = {
@@ -863,9 +1011,11 @@
 
       let pluginInicializado = false;
       let traduzindo = false;
+      let traducaoEnviada = false;
 
       async function iniciarPlugin() {
-        window.VLibrasWidget?.open();
+        widgetPodeAbrir = true;
+        abrirWidget();
         if (pluginInicializado && typeof window.plugin?.translate === "function") return;
 
         await new Promise((resolve, reject) => {
@@ -874,6 +1024,7 @@
             if (typeof window.plugin?.translate === "function") {
               clearInterval(check);
               pluginInicializado = true;
+              definirCarregamentoTraduzir(false);
               resolve();
             } else if (Date.now() - inicio >= 20000) {
               clearInterval(check);
@@ -886,19 +1037,26 @@
       async function traduzirEExibir(texto) {
         if (traduzindo) return;
         traduzindo = true;
+        definirCarregamentoTraduzir(true);
 
         try {
           await iniciarPlugin();
+          definirCarregamentoTraduzir(true);
           const conteudo = (texto || textoEl.innerText.trim()).replace(/\s+/g, " ").trim();
           if (!conteudo || conteudo.length < 1) {
             console.warn("Tradução ignorada: texto vazio");
             return;
           }
+          traducaoEnviada = true;
           await window.plugin.translate(conteudo);
         } catch (erro) {
           console.error("Erro ao traduzir:", erro);
         } finally {
-          setTimeout(() => { traduzindo = false; }, 1500);
+          setTimeout(() => {
+            traduzindo = false;
+            traducaoEnviada = false;
+            definirCarregamentoTraduzir(false);
+          }, 1500);
         }
       }
 

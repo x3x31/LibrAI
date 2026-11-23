@@ -1,4 +1,4 @@
-const CACHE_NAME = 'librai-v6';
+const CACHE_NAME = 'librai-v9';
 const ASSETS = [
   './',
   './index.html',
@@ -29,6 +29,17 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.mode === 'navigate' || e.request.url.endsWith('/index.html')) {
+    e.respondWith(
+      fetch(e.request).then(r => {
+        const copy = r.clone();
+        caches.open(CACHE_NAME).then(c => c.put(e.request, copy));
+        return r;
+      }).catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request))
   );
