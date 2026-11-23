@@ -14,6 +14,50 @@
     <meta name="apple-mobile-web-app-title" content="LibrAI" />
 
 
+    <script>
+      (function () {
+        var IGNORE = "#vlibras-app-wrapper";
+        var origAdd = EventTarget.prototype.addEventListener;
+        var origRemove = EventTarget.prototype.removeEventListener;
+        var wrappers = new WeakMap();
+
+        function isCapture(options) {
+          return options === true || (options && options.capture === true);
+        }
+
+        function isIgnored(e) {
+          return e.target && e.target.closest && e.target.closest(IGNORE);
+        }
+
+        EventTarget.prototype.addEventListener = function (type, listener, options) {
+          if (
+            typeof listener === "function" &&
+            isCapture(options) &&
+            (this === document.body || this === document) &&
+            (type === "click" || type === "mouseover" || type === "mouseout")
+          ) {
+            var byTarget = wrappers.get(listener);
+            if (!byTarget) {
+              byTarget = new WeakMap();
+              wrappers.set(listener, byTarget);
+            }
+            var wrapper = function (e) {
+              if (isIgnored(e)) return;
+              return listener.call(this, e);
+            };
+            byTarget.set(this, wrapper);
+            return origAdd.call(this, type, wrapper, options);
+          }
+          return origAdd.call(this, type, listener, options);
+        };
+
+        EventTarget.prototype.removeEventListener = function (type, listener, options) {
+          var byTarget = wrappers.get(listener);
+          var wrapper = byTarget && byTarget.get(this);
+          return origRemove.call(this, type, wrapper || listener, options);
+        };
+      })();
+    </script>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
     <style>
@@ -257,6 +301,12 @@
         z-index: 2147483647 !important;
       }
 
+      html body #vlibras-app-wrapper .vlibras--hover,
+      html body #vlibras-app-wrapper .vlibras--active {
+        text-decoration: none !important;
+        cursor: inherit !important;
+      }
+
       #texto {
         user-select: text !important;
         -webkit-user-select: text !important;
@@ -471,7 +521,8 @@
   </head>
 
   <body>
-    <header id="main-header">
+    <div id="vlibras-app-wrapper" class="vlibras-ignore">
+    <header id="main-header" class="vlibras-ignore">
       <div class="header-brand">
         <img src="img/header/UERN.png" alt="UERN" style="height: 45px;" />
         <img src="img/header/PROFEI.png" alt="PROFEI" style="height: 55px;" />
@@ -479,7 +530,7 @@
     </header>
 
     <!-- VIEW: Início -->
-    <div id="view-inicio" class="page-view active">
+    <div id="view-inicio" class="page-view active vlibras-ignore">
       <div class="container">
         <div class="banner">
           <div>
@@ -531,7 +582,7 @@
     </div>
 
     <!-- VIEW: Sobre a Plataforma -->
-    <div id="view-plataforma" class="page-view">
+    <div id="view-plataforma" class="page-view vlibras-ignore">
       <div class="info-hero">
         <h1>Recurso educacional</h1>
       </div>
@@ -587,7 +638,7 @@
     </div>
 
     <!-- VIEW: Sobre o Autor -->
-    <div id="view-autor" class="page-view">
+    <div id="view-autor" class="page-view vlibras-ignore">
       <div class="info-hero theme-purple">
         <h1>Conheça a autora</h1>
       </div>
@@ -637,7 +688,7 @@
     </div>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
+    <nav class="bottom-nav vlibras-ignore">
       <button class="nav-item active" data-view="inicio">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/>
@@ -660,6 +711,7 @@
         <span>Autor</span>
       </button>
     </nav>
+    </div>
 
     <script>
       if (window.VLibras && window.VLibras.Widget) {
