@@ -14,54 +14,6 @@
     <meta name="apple-mobile-web-app-title" content="LibrAI" />
 
 
-    <script>
-      (function () {
-        var VW_INTERACTIVE = 'button, .category, .item, .btn-voltar, #btnTraduzir, #btnSugerirFrase, #btnLimpar';
-        var orig = Document.prototype.addEventListener;
-
-        Document.prototype.addEventListener = function (type, listener, options) {
-          if (typeof listener !== 'function') {
-            return orig.call(this, type, listener, options);
-          }
-
-          if (type === 'click' && options === true) {
-            var wrapped = function (e) {
-              if (e.target.closest && e.target.closest(VW_INTERACTIVE)) return;
-              return listener.call(this, e);
-            };
-            return orig.call(this, type, wrapped, options);
-          }
-
-          if (type === 'mouseover') {
-            var wrapped = function (e) { return; };
-            return orig.call(this, type, wrapped, options);
-          }
-
-          if (type === 'mouseout') {
-            var wrapped = function (e) { return; };
-            return orig.call(this, type, wrapped, options);
-          }
-
-          return orig.call(this, type, listener, options);
-        };
-      })();
-    </script>
-    <script>
-      (function () {
-        var patchInterval = setInterval(function () {
-          if (window.plugin && window.plugin.player && window.plugin.player.playWellcome && !window.plugin.player._welcomePatched) {
-            var p = window.plugin.player;
-            p._welcomePatched = true;
-            p.playWellcome = function () {
-              p.emit("start:welcome");
-              p.emit("stop:welcome");
-              p.skipped = true;
-            };
-          }
-        }, 50);
-        setTimeout(function () { clearInterval(patchInterval); }, 30000);
-      })();
-    </script>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
 
     <style>
@@ -301,37 +253,8 @@
         display: none;
       }
 
-      div[vw] {
+      #vlibras-access-wrapper {
         z-index: 2147483647 !important;
-      }
-
-      [vw-plugin-wrapper] {
-        z-index: 2147483647 !important;
-      }
-
-      [vp-click-blocker].vp-enabled {
-        display: block !important;
-        pointer-events: none !important;
-      }
-
-      [vw-access-button] {
-        transition: none !important;
-      }
-
-      [vw-access-button]:hover {
-        width: 40px !important;
-      }
-
-      .vw-links {
-        display: none !important;
-      }
-
-      #unity-error-dialog,
-      .unity-error-dialog,
-      #unity-container,
-      .webgl-content {
-        display: none !important;
-        visibility: hidden !important;
       }
 
       #texto {
@@ -738,45 +661,11 @@
       </button>
     </nav>
 
-    <!-- VLibras -->
-    <div vw class="enabled">
-      <div vw-access-button class="active"></div>
-      <div vw-plugin-wrapper>
-        <div class="vw-plugin-top-wrapper"></div>
-      </div>
-    </div>
-
     <script>
-      window.addEventListener("error", function (e) {
-        var msg = e.message || "";
-        if (msg.includes("classList") || msg.includes("Script error") || msg.includes("Unity") || msg.includes("undefined") || (e.filename && e.filename.includes("UnityLoader"))) {
-          e.stopImmediatePropagation();
-          e.preventDefault();
-          return true;
-        }
-      }, true);
-      window.onerror = function (msg, src, line, col, err) {
-        if (!msg) return false;
-        if (msg.includes("classList") || msg.includes("Script error") || msg.includes("Unity") || (src && src.includes("UnityLoader"))) {
-          return true;
-        }
-        return false;
-      };
-      window.addEventListener("unhandledrejection", function (e) {
-        e.preventDefault();
-      }, true);
-      function removeUnityErrors() {
-        var selectors = "#unity-error-dialog, .unity-error-dialog, #unity-container, .webgl-content, [class*='unity-error']";
-        document.querySelectorAll(selectors).forEach(function(el) { el.remove(); });
+      if (window.VLibras && window.VLibras.Widget) {
+        new window.VLibras.Widget({ rootPath: "https://vlibras.gov.br/app" });
+        window.VLibrasWidget?.open();
       }
-      new MutationObserver(removeUnityErrors).observe(document.body, { childList: true, subtree: true });
-      setInterval(removeUnityErrors, 500);
-      new window.VLibras.Widget("https://vlibras.gov.br/app");
-
-      setTimeout(function () {
-        var btn = document.querySelector("div[vw-access-button]");
-        if (btn) btn.click();
-      }, 3000);
 
       const dados = {
         cumprimentos: [
@@ -924,29 +813,19 @@
       let traduzindo = false;
 
       async function iniciarPlugin() {
-        var pluginAberto = document.querySelector("[vw-plugin-wrapper]")?.classList.contains("active");
-        if (pluginInicializado && window.plugin?.player?.loaded && pluginAberto) return;
+        window.VLibrasWidget?.open();
+        if (pluginInicializado && typeof window.plugin?.translate === "function") return;
 
-        if (!pluginAberto) {
-          document.querySelector("[vw-access-button]").click();
-        }
-
-        return new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
+          const inicio = Date.now();
           const check = setInterval(() => {
-            if (window.plugin && window.plugin.player?.loaded) {
+            if (typeof window.plugin?.translate === "function") {
               clearInterval(check);
               pluginInicializado = true;
-
-              var p = window.plugin.player;
-              if (p.translator && p.translator.translate && !p.translator._patched) {
-                var origTrans = p.translator.translate.bind(p.translator);
-                p.translator._patched = true;
-                p.translator.translate = function (text, domain, cb) {
-                  return origTrans(text, "vlibras.gov.br", cb);
-                };
-              }
-
               resolve();
+            } else if (Date.now() - inicio >= 20000) {
+              clearInterval(check);
+              reject(new Error("VLibras não carregou a tempo"));
             }
           }, 100);
         });
@@ -963,7 +842,7 @@
             console.warn("Tradução ignorada: texto vazio");
             return;
           }
-          window.plugin.translate(conteudo);
+          await window.plugin.translate(conteudo);
         } catch (erro) {
           console.error("Erro ao traduzir:", erro);
         } finally {
