@@ -1,4 +1,4 @@
-const CACHE_NAME = 'librai-v9';
+const CACHE_NAME = 'librai-v12';
 const ASSETS = [
   './',
   './index.html',
